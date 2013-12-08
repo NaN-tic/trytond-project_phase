@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tryton>
+    <data>
+        <record model="ir.ui.view" id="project_phase_view_form">
+            <field name="model">project.work.task_phase</field>
+            <field name="type">form</field>
+            <field name="name">task_phase_form</field>
+        </record>
+        <record model="ir.ui.view" id="project_phase_view_list">
+            <field name="model">project.work.task_phase</field>
+            <field name="type">tree</field>
+            <field name="name">task_phase_list</field>
+        </record>
+        <record model="ir.ui.view" id="work_view_form">
+            <field name="model">project.work</field>
+            <field name="inherit" ref="project.work_view_form"/>
+            <field name="name">work_view_form</field>
+        </record>
+        <record model="ir.ui.view" id="work_view_list">
+            <field name="model">project.work</field>
+            <field name="inherit" ref="project.work_view_list2"/>
+            <field name="name">work_view_list</field>
+        </record>
+
+        <record model="ir.ui.view" id="project_tracker_view_form">
+            <field name="model">project.work.tracker</field>
+            <field name="inherit" ref="task_tracker.task_tracker_view_form"/>
+            <field name="name">work_tracker_form</field>
+        </record>
+        <record model="ir.ui.view" id="project_tracker_view_list">
+            <field name="model">project.work.tracker</field>
+            <field name="inherit" ref="task_tracker.task_tracker_view_list"/>
+            <field name="name">work_tracker_list</field>
+        </record>
+        <record model="ir.action.act_window" id="act_task_phase">
+            <field name="name">Project Phase</field>
+            <field name="res_model">project.work.task_phase</field>
+        </record>
+        <record model="ir.action.act_window.view" id="act_project_phase_view1">
+            <field name="sequence" eval="10"/>
+            <field name="view" ref="project_phase_view_list"/>
+            <field name="act_window" ref="act_task_phase"/>
+        </record>
+        <record model="ir.action.act_window.view" id="act_project_phase_view2">
+            <field name="sequence" eval="20"/>
+            <field name="view" ref="project_phase_view_form"/>
+            <field name="act_window" ref="act_task_phase"/>
+        </record>
+        <record model="ir.model.access" id="access_project_phase">
+            <field name="model" search="[('model', '=', 'project.work.task_phase')]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_delete" eval="False"/>
+        </record>
+        <record model="ir.model.access" id="access_project_phase_admin">
+            <field name="model" search="[('model', '=', 'project.work.task_phase')]"/>
+            <field name="group" ref="project.group_project_admin"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_delete" eval="True"/>
+        </record>
+
+        <!-- Menus -->
+            <menuitem action="act_task_phase" id="menu_project_phase" 
+                parent="project.menu_configuration" 
+                sequence="10" name="Task Phase"/>
+
+          <record model="ir.ui.menu-res.group" id="menu_group_project_phase">
+            <field name="menu" ref="menu_project_phase"/>
+            <field name="group" ref="project.group_project_admin"/>
+          </record>
+    </data>
+</tryton>
