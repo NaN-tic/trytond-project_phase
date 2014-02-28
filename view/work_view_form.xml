@@ -6,8 +6,6 @@ this repository contains the full copyright notices and license terms. -->
     <xpath expr="//group[@id='buttons']" position="inside">
         <label name="task_phase"/>
         <field name="task_phase"/>
-        <label name="project_phase"/>
-        <field name="project_phase"/>
     </xpath>
 </data>
     

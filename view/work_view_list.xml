@@ -5,6 +5,5 @@ this repository contains the full copyright notices and license terms. -->
 <data>
     <xpath expr="/tree" position="inside">
         <field name="task_phase"/>
-        <field name="project_phase"/>
     </xpath>
 </data>

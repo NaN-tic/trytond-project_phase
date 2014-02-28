@@ -22,16 +22,6 @@
             <field name="name">work_view_list</field>
         </record>
 
-        <record model="ir.ui.view" id="project_tracker_view_form">
-            <field name="model">project.work.tracker</field>
-            <field name="inherit" ref="task_tracker.task_tracker_view_form"/>
-            <field name="name">work_tracker_form</field>
-        </record>
-        <record model="ir.ui.view" id="project_tracker_view_list">
-            <field name="model">project.work.tracker</field>
-            <field name="inherit" ref="task_tracker.task_tracker_view_list"/>
-            <field name="name">work_tracker_list</field>
-        </record>
         <record model="ir.action.act_window" id="act_task_phase">
             <field name="name">Project Phase</field>
             <field name="res_model">project.work.task_phase</field>
