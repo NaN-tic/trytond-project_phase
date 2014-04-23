@@ -3,4 +3,5 @@
      copyright notices and license terms. -->
 <tree string="Task Phase">
     <field name="name"/>
+    <field name="type"/>
 </tree>

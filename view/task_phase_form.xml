@@ -4,6 +4,8 @@
 <form string="Task Phase">
     <label name="name"/>
     <field name="name"/>
+    <label name="type"/>
+    <field name="type"/>
     <separator name="comment" colspan="4"/>
     <field name="comment" colspan="4"/>
 </form>
