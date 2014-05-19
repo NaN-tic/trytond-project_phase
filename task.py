@@ -39,7 +39,8 @@ class Work:
     def default_task_phase():
         Phase = Pool().get('project.work.task_phase')
         phase = Phase.search([('type', '=', 'initial')])
-        return phase and phase[0].id
+        if phase:
+            return phase[0].id
 
     def get_closed_states(self):
         return ['done']
