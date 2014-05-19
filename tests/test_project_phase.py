@@ -10,50 +10,44 @@ if os.path.isdir(DIR):
     sys.path.insert(0, os.path.dirname(DIR))
 
 import unittest
-#import doctest TODO: Remove if no sceneario needed.
 import trytond.tests.test_tryton
 from trytond.tests.test_tryton import test_view, test_depends
-from trytond.backend.sqlite.database import Database as SQLiteDatabase
+from trytond.tests.test_tryton import POOL, DB_NAME, USER, CONTEXT
+from trytond.transaction import Transaction
 
 
 class TestCase(unittest.TestCase):
-    '''
-    Test module.
-    '''
+    'Test module'
 
     def setUp(self):
         trytond.tests.test_tryton.install_module('project_phase')
+        self.task_phase = POOL.get('project.work.task_phase')
 
     def test0005views(self):
-        '''
-        Test views.
-        '''
+        'Test views'
         test_view('project_phase')
 
     def test0006depends(self):
-        '''
-        Test depends.
-        '''
+        'Test depends'
         test_depends()
 
-
-def doctest_dropdb(test):
-    database = SQLiteDatabase().connect()
-    cursor = database.cursor(autocommit=True)
-    try:
-        database.drop(cursor, ':memory:')
-        cursor.commit()
-    finally:
-        cursor.close()
-
+    def test0010_create_phases(self):
+        with Transaction().start(DB_NAME, USER,
+                context=CONTEXT) as transaction:
+            #This is needed in order to get default values for other test
+            #executing in the same database
+            self.task_phase.create([{
+                    'name': 'Initial',
+                    'type': 'initial',
+                    }, {
+                    'name': 'Final',
+                    'type': 'final',
+                    }])
+            transaction.cursor.commit()
 
 def suite():
     suite = trytond.tests.test_tryton.suite()
     suite.addTests(unittest.TestLoader().loadTestsFromTestCase(TestCase))
-    # TODO: remove if no scenario needed.
-    #suite.addTests(doctest.DocFileSuite('scenario_invoice.rst',
-    #        setUp=doctest_dropdb, tearDown=doctest_dropdb, encoding='utf-8',
-    #        optionflags=doctest.REPORT_ONLY_FIRST_FAILURE))
     return suite
 
 if __name__ == '__main__':
