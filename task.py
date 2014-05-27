@@ -46,8 +46,9 @@ class Work:
         return ['done']
 
     def check_phase(self):
-        if self.state in self.get_closed_states() and \
-                self.task_phase and self.task_phase.type != 'final':
+        if (self.type != 'project' and
+            self.state in self.get_closed_states() and self.task_phase
+            and self.task_phase.type != 'final'):
             self.raise_user_error('invalid_phase', {
                 'work': self.rec_name,
                 'phase': self.task_phase,
