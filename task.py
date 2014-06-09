@@ -32,7 +32,7 @@ class Work:
         super(Work, cls).__setup__()
         cls._error_messages.update({
                 'invalid_phase': ('Task "%(work)s" can not be closed on '
-                    'phase "%s(phase)s". Closed states:"%(states)s"'),
+                    'phase "%(phase)s".'),
                 })
 
     @staticmethod
@@ -47,13 +47,12 @@ class Work:
 
     def check_phase(self):
         if (self.type != 'project' and
-            self.state in self.get_closed_states() and self.task_phase
-            and self.task_phase.type != 'final'):
+                self.state in self.get_closed_states() and self.task_phase
+                and self.task_phase.type != 'final'):
             self.raise_user_error('invalid_phase', {
-                'work': self.rec_name,
-                'phase': self.task_phase,
-                'states': self.get_closed_states(),
-            })
+                    'work': self.rec_name,
+                    'phase': self.task_phase.rec_name,
+                    })
 
     @classmethod
     def validate(cls, works):
