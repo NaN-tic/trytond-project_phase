@@ -4,7 +4,7 @@ from trytond.model import ModelView, ModelSQL, fields
 from trytond.pool import Pool, PoolMeta
 from trytond.pyson import Eval
 
-__all__ = ['TaskPhase', 'Work']
+__all__ = ['TaskPhase', 'Work', 'TaskPhaseTracker']
 __metaclass__ = PoolMeta
 
 
@@ -16,6 +16,18 @@ class TaskPhase(ModelSQL, ModelView):
     type = fields.Selection([(None, ''), ('initial', 'Initial'),
         ('final', 'Final')], 'Type')
     comment = fields.Text('comment')
+    required_effort = fields.Many2Many(
+        'project.work.task_phase-project.work.tracker', 'task_phase',
+        'tracker', 'Required Effort On')
+
+
+class TaskPhaseTracker(ModelSQL):
+    'TaskPhase - Tracker'
+    __name__ = 'project.work.task_phase-project.work.tracker'
+    task_phase = fields.Many2One('project.work.task_phase', 'Task Phase',
+        ondelete='CASCADE', required=True, select=True)
+    tracker = fields.Many2One('project.work.tracker', 'Tracker',
+        ondelete='CASCADE', required=True, select=True)
 
 
 class Work:
@@ -33,6 +45,8 @@ class Work:
         cls._error_messages.update({
                 'invalid_phase': ('Task "%(work)s" can not be closed on '
                     'phase "%(phase)s".'),
+                'required_effort': ('Task "%(work)s" can not saved without set'
+                    ' effort'),
                 })
 
     @staticmethod
@@ -54,8 +68,23 @@ class Work:
                     'phase': self.task_phase.rec_name,
                     })
 
+    def check_required_effort(self):
+        if self.tracker in self.task_phase.required_effort:
+            if not self.effort > 0:
+                self.raise_user_error('required_effort', {
+                    'work': self.rec_name,
+                    })
+
     @classmethod
     def validate(cls, works):
         super(Work, cls).validate(works)
         for work in works:
             work.check_phase()
+            work.check_required_effort()
+
+
+
+
+
+
+

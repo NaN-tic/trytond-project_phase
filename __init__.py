@@ -7,5 +7,6 @@ from .task import *
 def register():
     Pool.register(
         TaskPhase,
+        TaskPhaseTracker,
         Work,
         module='project_phase', type_='model')

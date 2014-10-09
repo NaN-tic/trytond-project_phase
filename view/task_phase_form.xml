@@ -6,6 +6,7 @@
     <field name="name"/>
     <label name="type"/>
     <field name="type"/>
+    <field name="required_effort" colspan="4"/>
     <separator name="comment" colspan="4"/>
     <field name="comment" colspan="4"/>
 </form>
