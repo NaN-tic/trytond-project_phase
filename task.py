@@ -13,8 +13,11 @@ class TaskPhase(ModelSQL, ModelView):
     __name__ = 'project.work.task_phase'
 
     name = fields.Char('Name', required=True, select=True)
-    type = fields.Selection([(None, ''), ('initial', 'Initial'),
-        ('final', 'Final')], 'Type')
+    type = fields.Selection([
+            (None, ''),
+            ('initial', 'Initial'),
+            ('final', 'Final'),
+            ], 'Type')
     comment = fields.Text('comment')
     required_effort = fields.Many2Many(
         'project.work.task_phase-project.work.tracker', 'task_phase',
@@ -52,9 +55,9 @@ class Work:
     @staticmethod
     def default_task_phase():
         Phase = Pool().get('project.work.task_phase')
-        phase = Phase.search([('type', '=', 'initial')])
-        if phase:
-            return phase[0].id
+        phases = Phase.search([('type', '=', 'initial')])
+        if len(phases) == 1:
+            return phases[0].id
 
     def get_closed_states(self):
         return ['done']
