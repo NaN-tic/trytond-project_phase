@@ -72,7 +72,8 @@ class Work:
                     })
 
     def check_required_effort(self):
-        if self.tracker in self.task_phase.required_effort:
+        if (self.task_phase and self.tracker and
+                self.tracker in self.task_phase.required_effort):
             if not self.effort > 0:
                 self.raise_user_error('required_effort', {
                     'work': self.rec_name,
@@ -84,10 +85,3 @@ class Work:
         for work in works:
             work.check_phase()
             work.check_required_effort()
-
-
-
-
-
-
-
