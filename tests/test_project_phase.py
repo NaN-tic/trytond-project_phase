@@ -1,27 +1,19 @@
-#!/usr/bin/env python
 # The COPYRIGHT file at the top level of this repository contains the full
 # copyright notices and license terms.
 import unittest
 import trytond.tests.test_tryton
-from trytond.tests.test_tryton import test_view, test_depends
+from trytond.tests.test_tryton import ModuleTestCase
 from trytond.tests.test_tryton import POOL, DB_NAME, USER, CONTEXT
 from trytond.transaction import Transaction
 
 
-class TestCase(unittest.TestCase):
+class TestCase(ModuleTestCase):
     'Test module'
+    module = 'project_phase'
 
     def setUp(self):
-        trytond.tests.test_tryton.install_module('project_phase')
+        super(TestCase, self).setUp()
         self.task_phase = POOL.get('project.work.task_phase')
-
-    def test0005views(self):
-        'Test views'
-        test_view('project_phase')
-
-    def test0006depends(self):
-        'Test depends'
-        test_depends()
 
     def test0010_create_phases(self):
         with Transaction().start(DB_NAME, USER,
