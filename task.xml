@@ -16,9 +16,9 @@
             <field name="inherit" ref="project.work_view_form"/>
             <field name="name">work_view_form</field>
         </record>
-        <record model="ir.ui.view" id="work_view_list">
+        <record model="ir.ui.view" id="work_view_list_simple">
             <field name="model">project.work</field>
-            <field name="inherit" ref="project.work_view_list2"/>
+            <field name="inherit" ref="project.work_view_list_simple"/>
             <field name="name">work_view_list</field>
         </record>
 
@@ -53,8 +53,8 @@
         </record>
 
         <!-- Menus -->
-            <menuitem action="act_task_phase" id="menu_project_phase" 
-                parent="project.menu_configuration" 
+            <menuitem action="act_task_phase" id="menu_project_phase"
+                parent="project.menu_configuration"
                 sequence="10" name="Task Phase"/>
 
           <record model="ir.ui.menu-res.group" id="menu_group_project_phase">
