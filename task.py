@@ -75,8 +75,8 @@ class Work:
     def check_required_effort(self):
         if (self.task_phase and self.tracker and
                 self.tracker in self.task_phase.required_effort):
-            if (self.effort_duration and
-                not self.effort_duration > timedelta(seconds=0)):
+            duration = self.effort_duration or timedelta()
+            if (not duration > timedelta(seconds=0)):
                 self.raise_user_error('required_effort', {
                         'work': self.rec_name,
                         })
