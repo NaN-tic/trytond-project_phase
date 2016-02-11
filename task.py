@@ -3,6 +3,7 @@
 from trytond.model import ModelView, ModelSQL, fields
 from trytond.pool import Pool, PoolMeta
 from trytond.pyson import Eval
+from datetime import timedelta
 
 __all__ = ['TaskPhase', 'Work', 'TaskPhaseTracker']
 __metaclass__ = PoolMeta
@@ -74,10 +75,11 @@ class Work:
     def check_required_effort(self):
         if (self.task_phase and self.tracker and
                 self.tracker in self.task_phase.required_effort):
-            if not self.effort > 0:
+            duration = self.effort_duration or timedelta()
+            if (not duration > timedelta(seconds=0)):
                 self.raise_user_error('required_effort', {
-                    'work': self.rec_name,
-                    })
+                        'work': self.rec_name,
+                        })
 
     @classmethod
     def validate(cls, works):
