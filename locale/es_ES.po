@@ -1,6 +1,14 @@
-# 
+#
 msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
+
+msgctxt "error:project.work:"
+msgid "Task \"%(work)s\" can not be closed on phase \"%(phase)s\"."
+msgstr "El trabajo \"%(work)s\" no se puede cerrar en la fase \"%(phase)s\"."
+
+msgctxt "error:project.work:"
+msgid "Task \"%(work)s\" can not saved without set effort"
+msgstr "El trabajo \"%(work)s\" no se puede guardar sin anotar el tiempo."
 
 msgctxt "field:project.work,task_phase:"
 msgid "Task Phase"
