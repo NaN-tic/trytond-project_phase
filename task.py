@@ -6,13 +6,11 @@ from trytond.pyson import Eval
 from datetime import timedelta
 
 __all__ = ['TaskPhase', 'Work', 'TaskPhaseTracker']
-__metaclass__ = PoolMeta
 
 
 class TaskPhase(ModelSQL, ModelView):
     'Project Phase'
     __name__ = 'project.work.task_phase'
-
     name = fields.Char('Name', required=True, select=True)
     type = fields.Selection([
             (None, ''),
@@ -35,8 +33,8 @@ class TaskPhaseTracker(ModelSQL):
 
 
 class Work:
+    __metaclass__ = PoolMeta
     __name__ = 'project.work'
-
     task_phase = fields.Many2One('project.work.task_phase', 'Task Phase',
         states={
             'required': Eval('type') == 'task',
