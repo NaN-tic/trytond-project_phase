@@ -1,9 +1,7 @@
 <?xml version="1.0"?>
 <!-- This file is part of nantic_project.  The COPYRIGHT file at the top level of
 this repository contains the full copyright notices and license terms. -->
-
 <data>
-
     <xpath expr="/form/notebook/page[@id='general']/group/group[@id='buttons']" position="inside">
         <label name="task_phase"/>
         <field name="task_phase"/>
