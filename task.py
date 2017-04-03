@@ -11,7 +11,7 @@ __all__ = ['TaskPhase', 'Work', 'TaskPhaseTracker']
 class TaskPhase(ModelSQL, ModelView):
     'Project Phase'
     __name__ = 'project.work.task_phase'
-    name = fields.Char('Name', required=True, select=True)
+    name = fields.Char('Name', required=True, translate=True, select=True)
     type = fields.Selection([
             (None, ''),
             ('initial', 'Initial'),
