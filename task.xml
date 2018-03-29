@@ -3,6 +3,97 @@
 this repository contains the full copyright notices and license terms. -->
 <tryton>
     <data>
+        <record model="ir.ui.view" id="work_view_form">
+            <field name="model">project.work</field>
+            <field name="inherit" ref="project.work_view_form"/>
+            <field name="name">work_form</field>
+        </record>
+        <record model="ir.ui.view" id="work_view_list">
+            <field name="model">project.work</field>
+            <field name="inherit" ref="project.work_view_list"/>
+            <field name="name">work_list</field>
+        </record>
+
+        <record model="ir.ui.view" id="project_tracker_view_form">
+            <field name="model">project.work.tracker</field>
+            <field name="name">project_tracker_form</field>
+            <field name="inherit" ref="project_tracker.project_tracker_view_form"/>
+        </record>
+        <record model="ir.ui.view" id="project_tracker_view_list">
+            <field name="model">project.work.tracker</field>
+            <field name="name">project_tracker_list</field>
+            <field name="inherit" ref="project_tracker.project_tracker_view_list"/>
+        </record>
+
+        <!-- project.work.workflow -->
+        <record model="ir.ui.view" id="workflow_view_form">
+            <field name="model">project.work.workflow</field>
+            <field name="type">form</field>
+            <field name="name">workflow_form</field>
+        </record>
+        <record model="ir.ui.view" id="workflow_view_list">
+            <field name="model">project.work.workflow</field>
+            <field name="type">tree</field>
+            <field name="name">workflow_list</field>
+        </record>
+        <record model="ir.action.act_window" id="act_workflow">
+            <field name="name">Project Workflow</field>
+            <field name="res_model">project.work.workflow</field>
+        </record>
+        <record model="ir.action.act_window.view" id="act_workflow_view1">
+            <field name="sequence" eval="10"/>
+            <field name="view" ref="workflow_view_list"/>
+            <field name="act_window" ref="act_workflow"/>
+        </record>
+        <record model="ir.action.act_window.view" id="act_workflow_view2">
+            <field name="sequence" eval="20"/>
+            <field name="view" ref="workflow_view_form"/>
+            <field name="act_window" ref="act_workflow"/>
+        </record>
+        <record model="ir.model.access" id="access_workflow">
+            <field name="model" search="[('model', '=', 'project.work.workflow')]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_delete" eval="False"/>
+        </record>
+        <record model="ir.model.access" id="access_workflow_admin">
+            <field name="model" search="[('model', '=', 'project.work.workflow')]"/>
+            <field name="group" ref="project.group_project_admin"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_delete" eval="True"/>
+        </record>
+
+        <!-- project.work.workflow.line -->
+        <record model="ir.ui.view" id="workflow_line_view_form">
+            <field name="model">project.work.workflow.line</field>
+            <field name="type">form</field>
+            <field name="name">workflow_line_form</field>
+        </record>
+        <record model="ir.ui.view" id="workflow_line_view_list">
+            <field name="model">project.work.workflow.line</field>
+            <field name="type">tree</field>
+            <field name="name">workflow_line_list</field>
+        </record>
+        <record model="ir.model.access" id="access_workflow_line">
+            <field name="model" search="[('model', '=', 'project.work.workflow.line')]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_delete" eval="False"/>
+        </record>
+        <record model="ir.model.access" id="access_workflow_line_admin">
+            <field name="model" search="[('model', '=', 'project.work.workflow.line')]"/>
+            <field name="group" ref="project.group_project_admin"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_delete" eval="True"/>
+        </record>
+
+        <!-- project.work.task_phase -->
         <record model="ir.ui.view" id="project_phase_view_form">
             <field name="model">project.work.task_phase</field>
             <field name="type">form</field>
@@ -13,17 +104,6 @@ this repository contains the full copyright notices and license terms. -->
             <field name="type">tree</field>
             <field name="name">task_phase_list</field>
         </record>
-        <record model="ir.ui.view" id="work_view_form">
-            <field name="model">project.work</field>
-            <field name="inherit" ref="project.work_view_form"/>
-            <field name="name">work_view_form</field>
-        </record>
-        <record model="ir.ui.view" id="work_view_list_simple">
-            <field name="model">project.work</field>
-            <field name="inherit" ref="project.work_view_list_simple"/>
-            <field name="name">work_view_list</field>
-        </record>
-
         <record model="ir.action.act_window" id="act_task_phase">
             <field name="name">Project Phase</field>
             <field name="res_model">project.work.task_phase</field>
@@ -55,13 +135,11 @@ this repository contains the full copyright notices and license terms. -->
         </record>
 
         <!-- Menus -->
-            <menuitem action="act_task_phase" id="menu_project_phase"
-                parent="project.menu_configuration"
-                sequence="10" name="Task Phase"/>
-
-          <record model="ir.ui.menu-res.group" id="menu_group_project_phase">
-            <field name="menu" ref="menu_project_phase"/>
-            <field name="group" ref="project.group_project_admin"/>
-          </record>
+        <menuitem action="act_task_phase" id="menu_project_phase"
+            parent="project.menu_configuration"
+            sequence="10" name="Phases"/>
+        <menuitem action="act_workflow" id="menu_workflow"
+            parent="project.menu_configuration"
+            sequence="10" name="Workflows"/>
     </data>
 </tryton>
