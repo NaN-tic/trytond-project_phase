@@ -4,5 +4,8 @@ this repository contains the full copyright notices and license terms. -->
 <data>
     <xpath expr="/tree" position="inside">
         <field name="task_phase"/>
+        <field name="since_phase"/>
+        <field name="times_phase"/>
+        <field name="time_phase"/>
     </xpath>
 </data>
