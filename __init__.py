@@ -9,4 +9,7 @@ def register():
         task.TaskPhase,
         task.TaskPhaseTracker,
         task.Work,
+        task.Workflow,
+        task.WorkflowLine,
+        task.Tracker,
         module='project_phase', type_='model')
