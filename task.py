@@ -224,4 +224,3 @@ class WorkflowLine(sequence_ordered(), ModelSQL, ModelView):
     workflow = fields.Many2One('project.work.workflow', 'Workflow',
         required=True)
     phase = fields.Many2One('project.work.task_phase', 'Phase', required=True)
-    sequence = fields.Integer('Sequence')
