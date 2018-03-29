@@ -1,0 +1,4 @@
+<tree editable="bottom" sequence="sequence">
+    <field name="workflow"/>
+    <field name="phase"/>
+</tree>

@@ -1,0 +1,9 @@
+<form>
+    <label name="workflow"/>
+    <field name="workflow"/>
+    <newline/>
+    <label name="phase"/>
+    <field name="phase"/>
+    <label name="sequence"/>
+    <field name="sequence"/>
+</form>
