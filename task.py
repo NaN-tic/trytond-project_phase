@@ -199,7 +199,7 @@ class Work:
 class Workflow(ModelSQL, ModelView):
     'Project Workflow'
     __name__ = 'project.work.workflow'
-    name = fields.Char('Name', required=True)
+    name = fields.Char('Name', required=True, translate=True)
     lines = fields.One2Many('project.work.workflow.line', 'workflow', 'Phases')
     trackers = fields.One2Many('project.work.tracker', 'workflow', 'Trackers')
 
