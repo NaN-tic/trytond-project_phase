@@ -50,8 +50,7 @@ class TaskPhaseTracker(ModelSQL):
         ondelete='CASCADE', required=True, select=True)
 
 
-class Work:
-    __metaclass__ = PoolMeta
+class Work(metaclass=PoolMeta):
     __name__ = 'project.work'
     _history = True
     task_phase = fields.Many2One('project.work.task_phase', 'Task Phase',
@@ -112,8 +111,6 @@ class Work:
         query = query.join(history2, condition=(query.id == history2.id)
             & (Column(query, '__id') < Column(history2, '__id')))
         query = query.select(history2.id, interval, group_by=[history2.id])
-        print 'QUERY:'
-        print query
         return query, interval
 
     @classmethod
@@ -211,9 +208,8 @@ class Workflow(ModelSQL, ModelView):
         return super(Workflow, cls).copy(workflows, default=None)
 
 
-class Tracker:
+class Tracker(metaclass=PoolMeta):
     __name__ = 'project.work.tracker'
-    __metaclass__ = PoolMeta
     workflow = fields.Many2One('project.work.workflow', 'Workflow',
         required=True)
 
