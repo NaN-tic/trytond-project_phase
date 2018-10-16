@@ -1,12 +1,14 @@
 <?xml version="1.0"?>
 <!-- The COPYRIGHT file at the top level of this repository contains the full
      copyright notices and license terms. -->
-<form>
+<form col="6">
     <label name="name"/>
     <field name="name"/>
     <label name="type"/>
     <field name="type"/>
-    <field name="required_effort" colspan="4"/>
-    <separator name="comment" colspan="4"/>
-    <field name="comment" colspan="4"/>
+    <label name="sequence"/>
+    <field name="sequence"/>
+    <field name="required_effort" colspan="6"/>
+    <separator name="comment" colspan="6"/>
+    <field name="comment" colspan="6"/>
 </form>

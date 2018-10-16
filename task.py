@@ -16,7 +16,7 @@ __all__ = ['TaskPhase', 'TaskPhaseTracker', 'Work', 'Workflow', 'WorkflowLine',
 def round_timedelta(td):
     return timedelta(seconds=round(td.total_seconds() / 60) * 60)
 
-class TaskPhase(ModelSQL, ModelView):
+class TaskPhase(sequence_ordered(), ModelSQL, ModelView):
     'Project Phase'
     __name__ = 'project.work.task_phase'
     name = fields.Char('Name', required=True, translate=True, select=True)
