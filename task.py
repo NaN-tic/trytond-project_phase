@@ -9,6 +9,8 @@ from trytond.model import ModelView, ModelSQL, fields, sequence_ordered
 from trytond.pool import Pool, PoolMeta
 from trytond.pyson import Eval, Bool
 from trytond.transaction import Transaction
+from trytond.i18n import gettext
+from trytond.exceptions import UserError
 
 __all__ = ['TaskPhase', 'TaskPhaseTracker', 'Work', 'Workflow', 'WorkflowLine',
     'Tracker']
@@ -66,16 +68,6 @@ class Work(metaclass=PoolMeta):
         'get_times_phase')
     time_phase = fields.Function(fields.TimeDelta('Time Phase'),
         'get_time_phase')
-
-    @classmethod
-    def __setup__(cls):
-        super(Work, cls).__setup__()
-        cls._error_messages.update({
-                'invalid_phase': ('Task "%(work)s" can not be closed on '
-                    'phase "%(phase)s".'),
-                'required_effort': ('Task "%(work)s" can not saved without set'
-                    ' effort'),
-                })
 
     @staticmethod
     def default_task_phase():
@@ -171,19 +163,17 @@ class Work(metaclass=PoolMeta):
         if (self.type != 'project' and
                 self.state in self.get_closed_states() and self.task_phase
                 and self.task_phase.type != 'final'):
-            self.raise_user_error('invalid_phase', {
-                    'work': self.rec_name,
-                    'phase': self.task_phase.rec_name,
-                    })
+            raise UserError(gettext('project_phase.invalid_phase',
+                    work=self.rec_name,
+                    phase=self.task_phase.rec_name ))
 
     def check_required_effort(self):
         if (self.task_phase and self.tracker and
                 self.tracker in self.task_phase.required_effort):
             duration = self.effort_duration or timedelta()
             if (not duration > timedelta(seconds=0)):
-                self.raise_user_error('required_effort', {
-                        'work': self.rec_name,
-                        })
+                raise UserError(gettext('project_phase.required_effort',
+                        work=self.rec_name))
 
     @classmethod
     def validate(cls, works):
