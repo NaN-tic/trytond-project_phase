@@ -128,6 +128,8 @@ class Work(metaclass=PoolMeta):
         return [('id', 'in', query)]
 
     def get_times_phase(self, name):
+        if not self.task_phase:
+            return 1
         history = self.__table_history__()
         cursor = Transaction().connection.cursor()
         cursor.execute(*history.select(history.task_phase,
