@@ -157,6 +157,8 @@ class Work:
         return count
 
     def get_time_phase(self, name):
+        if not self.task_phase:
+            return timedelta()
         history = self.__table_history__()
         cursor = Transaction().connection.cursor()
         cursor.execute(*history.select(history.task_phase,
