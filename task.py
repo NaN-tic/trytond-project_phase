@@ -40,7 +40,7 @@ class TaskPhase(sequence_ordered(), ModelSQL, ModelView):
             default = {}
         default.setdefault('workflows', None)
         default.setdefault('required_effort', None)
-        return super(cls, TaskPhase).copy(phases, default)
+        return super().copy(phases, default)
 
 
 class TaskPhaseTracker(ModelSQL):
@@ -181,7 +181,7 @@ class Work(metaclass=PoolMeta):
 
     @classmethod
     def validate(cls, works):
-        super(Work, cls).validate(works)
+        super().validate(works)
         for work in works:
             work.check_phase()
             work.check_required_effort()
@@ -199,7 +199,7 @@ class Workflow(ModelSQL, ModelView):
         if default is None:
             default = {}
         default.setdefault('trackers', None)
-        return super(Workflow, cls).copy(workflows, default=None)
+        return super().copy(workflows, default=None)
 
 
 class Tracker(metaclass=PoolMeta):
