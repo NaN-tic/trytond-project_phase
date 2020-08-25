@@ -38,6 +38,8 @@ class TaskPhase(sequence_ordered(), ModelSQL, ModelView):
     def copy(cls, phases, default=None):
         if default is None:
             default = {}
+        else:
+            default = default.copy()
         default.setdefault('workflows', None)
         default.setdefault('required_effort', None)
         return super().copy(phases, default)
@@ -198,6 +200,8 @@ class Workflow(ModelSQL, ModelView):
     def copy(cls, workflows, default=None):
         if default is None:
             default = {}
+        else:
+            default = default.copy()
         default.setdefault('trackers', None)
         return super().copy(workflows, default=None)
 
