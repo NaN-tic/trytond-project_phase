@@ -6,8 +6,8 @@ from . import task
 
 def register():
     Pool.register(
-        task.TaskPhase,
-        task.TaskPhaseTracker,
+        task.WorkStatus,
+        task.WorkStatusTracker,
         task.Work,
         task.Workflow,
         task.WorkflowLine,

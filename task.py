@@ -6,7 +6,7 @@ from sql.conditionals import Coalesce
 from sql.functions import Now, DateTrunc
 from sql.aggregate import Max
 from trytond.model import ModelView, ModelSQL, fields, sequence_ordered
-from trytond.pool import Pool, PoolMeta
+from trytond.pool import PoolMeta
 from trytond.pyson import Eval, Bool
 from trytond.transaction import Transaction
 from trytond.i18n import gettext
@@ -16,37 +16,30 @@ def round_timedelta(td):
     return timedelta(seconds=round(td.total_seconds() / 60) * 60)
 
 
-class TaskPhase(sequence_ordered(), ModelSQL, ModelView):
-    'Project Phase'
-    __name__ = 'project.work.task_phase'
-    name = fields.Char('Name', required=True, translate=True, select=True)
-    type = fields.Selection([
-            (None, ''),
-            ('initial', 'Initial'),
-            ('final', 'Final'),
-            ], 'Type')
+class WorkStatus(metaclass=PoolMeta):
+    __name__ = 'project.work.status'
     comment = fields.Text('Comment')
-    workflows = fields.Many2Many('project.work.workflow.line', 'phase',
+    workflows = fields.Many2Many('project.work.workflow.line', 'status',
         'workflow', 'Workflows')
     required_effort = fields.Many2Many(
-        'project.work.task_phase-project.work.tracker', 'task_phase',
+        'project.work.status-project.work.tracker', 'status',
         'tracker', 'Required Effort On')
 
     @classmethod
-    def copy(cls, phases, default=None):
+    def copy(cls, statuses, default=None):
         if default is None:
             default = {}
         else:
             default = default.copy()
         default.setdefault('workflows', None)
         default.setdefault('required_effort', None)
-        return super().copy(phases, default)
+        return super().copy(statuses, default)
 
 
-class TaskPhaseTracker(ModelSQL):
-    'TaskPhase - Tracker'
-    __name__ = 'project.work.task_phase-project.work.tracker'
-    task_phase = fields.Many2One('project.work.task_phase', 'Task Phase',
+class WorkStatusTracker(ModelSQL):
+    'Status - Tracker'
+    __name__ = 'project.work.status-project.work.tracker'
+    status = fields.Many2One('project.work.status', 'Status',
         ondelete='CASCADE', required=True, select=True)
     tracker = fields.Many2One('project.work.tracker', 'Tracker',
         ondelete='CASCADE', required=True, select=True)
@@ -55,31 +48,25 @@ class TaskPhaseTracker(ModelSQL):
 class Work(metaclass=PoolMeta):
     __name__ = 'project.work'
     _history = True
-    task_phase = fields.Many2One('project.work.task_phase', 'Task Phase',
-        domain=[('workflows.trackers', 'in', [Eval('tracker')])],
-        states={
-            'readonly': ~Bool(Eval('tracker')),
-            'required': Eval('type') == 'task',
-            'invisible': Eval('type') != 'task',
-            }, depends=['type', 'tracker'])
-    since_phase = fields.Function(fields.TimeDelta('Since Phase'),
-        'get_since_phase', searcher='search_since_phase')
-    times_phase = fields.Function(fields.Integer('Times Phase'),
-        'get_times_phase')
-    time_phase = fields.Function(fields.TimeDelta('Time Phase'),
-        'get_time_phase')
+    since_status = fields.Function(fields.TimeDelta('Since Status'),
+        'get_since_status', searcher='search_since_status')
+    times_status = fields.Function(fields.Integer('Times Status'),
+        'get_times_status')
+    time_status = fields.Function(fields.TimeDelta('Time Status'),
+        'get_time_status')
 
-    @staticmethod
-    def default_task_phase():
-        Phase = Pool().get('project.work.task_phase')
-        phases = Phase.search([('type', '=', 'initial')])
-        if len(phases) == 1:
-            return phases[0].id
+    @classmethod
+    def __setup__(cls):
+        super().__setup__()
+        readonly = cls.status.states.get('readonly', True)
+        cls.status.states['readonly'] = readonly & ~Bool(Eval('tracker'))
+        cls.status.depends.append('tracker')
+        cls.status.domain += [('workflows.trackers', 'in', [Eval('tracker')])]
 
     @classmethod
     def get_since_query(cls, ids=None):
         # Use two joins with the history table. The first finds the first
-        # previous record that had a different phase, whereas the second join
+        # previous record that had a different status, whereas the second join
         # finds the immediately next record that already had the current value
         task = cls.__table__()
         history = cls.__table_history__()
@@ -89,7 +76,7 @@ class Work(metaclass=PoolMeta):
                     history2.create_date)))
 
         query = task.join(history, condition=(task.id == history.id) &
-            (task.task_phase != history.task_phase))
+            (task.status != history.status))
         query = query.select(history.id,
             Max(Column(history, '__id')).as_('__id'),
             group_by=[history.id])
@@ -103,7 +90,7 @@ class Work(metaclass=PoolMeta):
         return query, interval
 
     @classmethod
-    def get_since_phase(cls, works, name):
+    def get_since_status(cls, works, name):
         cursor = Transaction().connection.cursor()
         res = dict([(x.id, datetime.now() - x.create_date) for x in works])
         query, _ = cls.get_since_query(ids=[x.id for x in works])
@@ -116,7 +103,7 @@ class Work(metaclass=PoolMeta):
         return res
 
     @classmethod
-    def search_since_phase(cls, name, clause):
+    def search_since_status(cls, name, clause):
         query, interval = cls.get_since_query()
         _, operator, value = clause
         Operator = fields.SQL_OPERATORS[operator]
@@ -124,30 +111,30 @@ class Work(metaclass=PoolMeta):
         query.columns = [query.columns[0]]
         return [('id', 'in', query)]
 
-    def get_times_phase(self, name):
-        if not self.task_phase:
+    def get_times_status(self, name):
+        if not self.status:
             return 1
         history = self.__table_history__()
         cursor = Transaction().connection.cursor()
-        cursor.execute(*history.select(history.task_phase,
+        cursor.execute(*history.select(history.status,
                 where=history.id == self.id,
                 order_by=[Column(history, '__id').desc]))
         count = 1
         flap = False
         for record in cursor.fetchall():
-            if record[0] != self.task_phase.id:
+            if record[0] != self.status.id:
                 flap = True
             elif flap:
                 count += 1
                 flap = False
         return count
 
-    def get_time_phase(self, name):
-        if not self.task_phase:
+    def get_time_status(self, name):
+        if not self.status:
             return timedelta()
         history = self.__table_history__()
         cursor = Transaction().connection.cursor()
-        cursor.execute(*history.select(history.task_phase,
+        cursor.execute(*history.select(history.status,
                 Coalesce(history.write_date, history.create_date),
                 where=history.id == self.id,
                 order_by=[Column(history, '__id').desc]))
@@ -155,14 +142,14 @@ class Work(metaclass=PoolMeta):
         elapsed = timedelta()
         for record in cursor.fetchall():
             start = record[1]
-            if record[0] == self.task_phase.id:
+            if record[0] == self.status.id:
                 elapsed += end - start
             end = start
         return round_timedelta(elapsed)
 
     def check_required_effort(self):
-        if (self.task_phase and self.tracker and
-                self.tracker in self.task_phase.required_effort):
+        if (self.status and self.tracker and
+                self.tracker in self.status.required_effort):
             duration = self.effort_duration or timedelta()
             if (not duration > timedelta(seconds=0)):
                 raise UserError(gettext('project_phase.required_effort',
@@ -179,7 +166,8 @@ class Workflow(ModelSQL, ModelView):
     'Project Workflow'
     __name__ = 'project.work.workflow'
     name = fields.Char('Name', required=True, translate=True)
-    lines = fields.One2Many('project.work.workflow.line', 'workflow', 'Phases')
+    lines = fields.One2Many('project.work.workflow.line', 'workflow',
+        'Statuses')
     trackers = fields.One2Many('project.work.tracker', 'workflow', 'Trackers')
 
     @classmethod
@@ -203,4 +191,4 @@ class WorkflowLine(sequence_ordered(), ModelSQL, ModelView):
     __name__ = 'project.work.workflow.line'
     workflow = fields.Many2One('project.work.workflow', 'Workflow',
         required=True)
-    phase = fields.Many2One('project.work.task_phase', 'Phase', required=True)
+    status = fields.Many2One('project.work.status', 'Status', required=True)

@@ -2,8 +2,8 @@
     <label name="workflow"/>
     <field name="workflow"/>
     <newline/>
-    <label name="phase"/>
-    <field name="phase"/>
+    <label name="status"/>
+    <field name="status"/>
     <label name="sequence"/>
     <field name="sequence"/>
 </form>
