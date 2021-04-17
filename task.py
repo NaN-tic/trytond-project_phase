@@ -12,11 +12,9 @@ from trytond.transaction import Transaction
 from trytond.i18n import gettext
 from trytond.exceptions import UserError
 
-__all__ = ['TaskPhase', 'TaskPhaseTracker', 'Work', 'Workflow', 'WorkflowLine',
-    'Tracker']
-
 def round_timedelta(td):
     return timedelta(seconds=round(td.total_seconds() / 60) * 60)
+
 
 class TaskPhase(sequence_ordered(), ModelSQL, ModelView):
     'Project Phase'
@@ -77,9 +75,6 @@ class Work(metaclass=PoolMeta):
         phases = Phase.search([('type', '=', 'initial')])
         if len(phases) == 1:
             return phases[0].id
-
-    def get_closed_states(self):
-        return ['done']
 
     @classmethod
     def get_since_query(cls, ids=None):
@@ -165,14 +160,6 @@ class Work(metaclass=PoolMeta):
             end = start
         return round_timedelta(elapsed)
 
-    def check_phase(self):
-        if (self.type != 'project' and
-                self.state in self.get_closed_states() and self.task_phase
-                and self.task_phase.type != 'final'):
-            raise UserError(gettext('project_phase.invalid_phase',
-                    work=self.rec_name,
-                    phase=self.task_phase.rec_name ))
-
     def check_required_effort(self):
         if (self.task_phase and self.tracker and
                 self.tracker in self.task_phase.required_effort):
@@ -185,7 +172,6 @@ class Work(metaclass=PoolMeta):
     def validate(cls, works):
         super().validate(works)
         for work in works:
-            work.check_phase()
             work.check_required_effort()
 
 
