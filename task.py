@@ -7,7 +7,7 @@ from sql.functions import Now, DateTrunc
 from sql.aggregate import Max
 from trytond.model import ModelView, ModelSQL, fields, sequence_ordered
 from trytond.pool import PoolMeta
-from trytond.pyson import Eval, Bool
+from trytond.pyson import Eval, Bool, If
 from trytond.transaction import Transaction
 from trytond.i18n import gettext
 from trytond.exceptions import UserError
@@ -61,7 +61,10 @@ class Work(metaclass=PoolMeta):
         readonly = cls.status.states.get('readonly', True)
         cls.status.states['readonly'] = readonly & ~Bool(Eval('tracker'))
         cls.status.depends.append('tracker')
-        cls.status.domain += [('workflows.trackers', 'in', [Eval('tracker')])]
+        cls.status.depends.append('type')
+        cls.status.domain += [If(Eval('type') == 'task',
+                ('workflows.trackers', 'in', [Eval('tracker')]),
+                ())]
 
     @classmethod
     def get_since_query(cls, ids=None):
