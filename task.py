@@ -48,6 +48,8 @@ class WorkStatusTracker(ModelSQL):
 class Work(metaclass=PoolMeta):
     __name__ = 'project.work'
     _history = True
+    active = fields.Function(fields.Boolean('Active'), 'get_active',
+        searcher='search_active')
     closing_date = fields.DateTime('Closing Date', readonly=True)
     since_status = fields.Function(fields.TimeDelta('Since Status'),
         'get_since_status', searcher='search_since_status')
@@ -66,6 +68,54 @@ class Work(metaclass=PoolMeta):
         cls.status.domain += [If(Eval('type') == 'task',
                 ('workflows.trackers', 'in', [Eval('tracker')]),
                 ())]
+
+    def get_active(self, name):
+        if self.type == 'project':
+            return self.status.progress != 1
+        return True
+
+    @classmethod
+    def search_active(cls, name, clause):
+        pos = ['OR', [
+                ('type', '=', 'task')
+                ], [
+                ('type', '=', 'project'),
+                ['OR',
+                    ('status.progress', '=', None),
+                    ('status.progress', '!=', 1),
+                    ],
+                ]
+            ]
+        neg = ['OR', [
+                ('type', '=', 'task')
+                ],[
+                ('type', '=', 'project'),
+                ('progress', '=', 1),
+                ]
+            ]
+
+        operator = clause[1]
+        operand = clause[2]
+        res = []
+        if operator == 'in':
+            if True in operand and False in operand:
+                return []
+            elif True in operand:
+                res = pos
+            elif False in operand:
+                res = neg
+        elif operator in ('=', '!='):
+            operator = operator == '=' and 1 or -1
+            operand = operand and 1 or -1
+            sign = operator * operand
+
+            if sign > 0:
+                res = pos
+            else:
+                res = neg
+        if not res:
+            res = pos
+        return res
 
     @classmethod
     def get_since_query(cls, ids=None):
