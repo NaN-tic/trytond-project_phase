@@ -48,6 +48,7 @@ class WorkStatusTracker(ModelSQL):
 class Work(metaclass=PoolMeta):
     __name__ = 'project.work'
     _history = True
+    closing_date = fields.DateTime('Closing Date', readonly=True)
     since_status = fields.Function(fields.TimeDelta('Since Status'),
         'get_since_status', searcher='search_since_status')
     times_status = fields.Function(fields.Integer('Times Status'),
@@ -163,6 +164,27 @@ class Work(metaclass=PoolMeta):
         super().validate(works)
         for work in works:
             work.check_required_effort()
+
+    @classmethod
+    def create(cls, vlist):
+        works = super(Work, cls).create(vlist)
+        cls.set_closing_date(works)
+        return works
+
+    @classmethod
+    def write(cls, *args):
+        super(Work, cls).write(*args)
+        works = cls.browse(sum(args[::2], []))
+        cls.set_closing_date(works)
+
+    @classmethod
+    def set_closing_date(cls, works):
+        for work in works:
+            if work.closing_date is None and work.status.progress == 1:
+                work.closing_date = datetime.now().replace(microsecond=0)
+            elif work.closing_date and work.status.progress != 1:
+                work.closing_date = None
+        cls.save(works)
 
 
 class Workflow(ModelSQL, ModelView):
