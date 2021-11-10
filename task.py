@@ -48,8 +48,8 @@ class WorkStatusTracker(ModelSQL):
 class Work(metaclass=PoolMeta):
     __name__ = 'project.work'
     _history = True
-    active = fields.Function(fields.Boolean('Active'), 'get_active',
-        searcher='search_active')
+    is_active = fields.Function(fields.Boolean('Is Active'), 'get_is_active',
+        searcher='search_is_active')
     closing_date = fields.DateTime('Closing Date', readonly=True)
     since_status = fields.Function(fields.TimeDelta('Since Status'),
         'get_since_status', searcher='search_since_status')
@@ -69,13 +69,13 @@ class Work(metaclass=PoolMeta):
                 ('workflows.trackers', 'in', [Eval('tracker')]),
                 ())]
 
-    def get_active(self, name):
+    def get_is_active(self, name):
         if self.type == 'project':
             return self.status.progress != 1
         return True
 
     @classmethod
-    def search_active(cls, name, clause):
+    def search_is_active(cls, name, clause):
         pos = ['OR', [
                 ('type', '=', 'task')
                 ], [
