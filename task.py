@@ -63,8 +63,8 @@ class Work(metaclass=PoolMeta):
         super().__setup__()
         readonly = cls.status.states.get('readonly', True)
         cls.status.states['readonly'] = readonly & ~Bool(Eval('tracker'))
-        cls.status.depends.append('tracker')
-        cls.status.depends.append('type')
+        cls.status.depends.add('tracker')
+        cls.status.depends.add('type')
         cls.status.domain += [If(Eval('type') == 'task',
                 ('workflows.trackers', 'in', [Eval('tracker')]),
                 ())]
