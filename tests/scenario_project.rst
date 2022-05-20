@@ -63,28 +63,28 @@ Create a project with a task::
     >>> task, = project.children
     >>> task, = Work.find([('type', '=', 'task')])
 
-Check task closing_date and is_active::
+Check task closing_date and active::
 
     >>> task.closing_date is None
     True
-    >>> task.is_active
+    >>> task.active
     True
     >>> task.status = done
     >>> task.save()
     >>> task.closing_date.date() == datetime.date.today()
     True
-    >>> task.is_active
+    >>> task.active
     True
     >>> task.status = open
     >>> task.save()
     >>> task.closing_date is None
     True
-    >>> task.is_active
+    >>> task.active
     True
 
-Check project is_active::
+Check project active::
 
-    >>> project.is_active
+    >>> project.active
     True
     >>> project, = Work.find([('type', '=', 'project')])
     >>> project.name
@@ -93,5 +93,5 @@ Check project is_active::
     >>> project.status.progress == 1
     True
     >>> project.save() ## MES ENLLA
-    >>> project.is_active
+    >>> project.active
     False
