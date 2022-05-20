@@ -48,8 +48,8 @@ class WorkStatusTracker(ModelSQL):
 class Work(metaclass=PoolMeta):
     __name__ = 'project.work'
     _history = True
-    is_active = fields.Function(fields.Boolean('Is Active'), 'get_is_active',
-        searcher='search_is_active')
+    active = fields.Function(fields.Boolean("Active"), 'get_active',
+        searcher='search_active')
     closing_date = fields.DateTime('Closing Date', readonly=True)
     since_status = fields.Function(fields.TimeDelta('Since Status'),
         'get_since_status', searcher='search_since_status')
@@ -69,37 +69,36 @@ class Work(metaclass=PoolMeta):
                 ('workflows.trackers', 'in', [Eval('tracker')]),
                 ())]
 
-    def get_is_active(self, name):
+    def get_active(self, name):
         if self.type == 'project':
             return self.status.progress != 1
         return True
 
     @classmethod
-    def search_is_active(cls, name, clause):
+    def search_active(cls, name, clause):
         pos = ['OR', [
                 ('type', '=', 'task')
                 ], [
                 ('type', '=', 'project'),
-                ['OR',
-                    ('status.progress', '=', None),
-                    ('status.progress', '!=', 1),
-                    ],
+                    ['OR',
+                        ('status.progress', '=', None),
+                        ('status.progress', '!=', 1),
+                        ],
                 ]
             ]
         neg = ['OR', [
                 ('type', '=', 'task')
                 ],[
-                ('type', '=', 'project'),
-                ('progress', '=', 1),
+                    ('type', '=', 'project'),
+                    ('status.progress', '=', 1),
                 ]
             ]
-
         operator = clause[1]
         operand = clause[2]
         res = []
         if operator == 'in':
             if True in operand and False in operand:
-                return []
+                res = ['OR', pos, neg]
             elif True in operand:
                 res = pos
             elif False in operand:
