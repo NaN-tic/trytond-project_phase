@@ -40,9 +40,9 @@ class WorkStatusTracker(ModelSQL):
     'Status - Tracker'
     __name__ = 'project.work.status-project.work.tracker'
     status = fields.Many2One('project.work.status', 'Status',
-        ondelete='CASCADE', required=True, select=True)
+        ondelete='CASCADE', required=True)
     tracker = fields.Many2One('project.work.tracker', 'Tracker',
-        ondelete='CASCADE', required=True, select=True)
+        ondelete='CASCADE', required=True)
 
 
 class Work(metaclass=PoolMeta):
