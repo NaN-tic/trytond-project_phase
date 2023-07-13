@@ -117,6 +117,12 @@ class Work(metaclass=PoolMeta):
         return res
 
     @classmethod
+    def get_total(cls, works, names):
+        # allow function fields get values in case is not active
+        with Transaction().set_context(active_test=False):
+            return super().get_total(works, names)
+
+    @classmethod
     def get_since_query(cls, ids=None):
         # Use two joins with the history table. The first finds the first
         # previous record that had a different status, whereas the second join
