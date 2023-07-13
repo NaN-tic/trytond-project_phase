@@ -70,8 +70,12 @@ class Work(metaclass=PoolMeta):
                 ())]
         cls._buttons.update({
                 'previous_phase': {
+                    'invisible': ~Bool(Eval('tracker')),
+                    'depends': ['tracker'],
                     },
                 'next_phase': {
+                    'invisible': ~Bool(Eval('tracker')),
+                    'depends': ['tracker'],
                     },
                 })
 
