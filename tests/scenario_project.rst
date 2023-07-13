@@ -50,7 +50,7 @@ Create a project with a task::
     >>> project.tracker = tracker
     >>> project.status == open
     True
-    >>> project.save() ## AQUI
+    >>> project.save()
     >>> project, = Work.find([('type', '=', 'project')])
     >>> project.status == open
     True
@@ -59,7 +59,7 @@ Create a project with a task::
     >>> task.status == open
     True
 
-    >>> project.save() ## ALLA
+    >>> project.save()
     >>> task, = project.children
     >>> task, = Work.find([('type', '=', 'task')])
 
@@ -92,6 +92,27 @@ Check project active::
     >>> project.status = done
     >>> project.status.progress == 1
     True
-    >>> project.save() ## MES ENLLA
+    >>> project.save()
     >>> project.active
     False
+
+Check next/previous status buttons::
+
+    >>> project = Work(type='project', name="Project")
+    >>> project.tracker = tracker
+    >>> project.status == open
+    True
+    >>> project.save()
+    >>> project.click('previous_phase')  # doctest: +IGNORE_EXCEPTION_DETAIL
+    Traceback (most recent call last):
+        ...
+    UserError: ('UserError', ('The "Open" status is the previous status of the "Project".', ''))
+    >>> project.progress = 1
+    >>> project.save()
+    >>> project.click('next_phase')
+    >>> project.status == done
+    True
+    >>> project.click('next_phase')  # doctest: +IGNORE_EXCEPTION_DETAIL
+    Traceback (most recent call last):
+        ...
+    UserError: ('UserError', ('The "Done" status is the latest status of the "Project".', ''))

@@ -68,6 +68,12 @@ class Work(metaclass=PoolMeta):
         cls.status.domain += [If(Eval('type') == 'task',
                 ('workflows.trackers', 'in', [Eval('tracker')]),
                 ())]
+        cls._buttons.update({
+                'previous_phase': {
+                    },
+                'next_phase': {
+                    },
+                })
 
     def get_active(self, name):
         if self.type == 'project':
@@ -225,6 +231,54 @@ class Work(metaclass=PoolMeta):
         super(Work, cls).write(*args)
         works = cls.browse(sum(args[::2], []))
         cls.set_closing_date(works)
+
+    def _get_new_status(self, direction='next'):
+        if not self.tracker or not self.tracker.workflow:
+            return
+        work_status = [line.status for line in self.tracker.workflow.lines]
+        new_status = None
+        for status in work_status:
+            if status == self.status:
+                position = work_status.index(status)
+                if direction == 'next':
+                    next_position = position + 1
+                    if len(work_status) > next_position:
+                        new_status = work_status[next_position]
+                        break
+                else:
+                    next_position = position - 1
+                    if next_position >= 0:
+                        new_status = work_status[next_position]
+                        break
+        return new_status
+
+    @classmethod
+    @ModelView.button
+    def previous_phase(cls, works):
+        to_write = []
+        for work in works:
+            new_status = work._get_new_status(direction='previous')
+            if new_status:
+                to_write.extend(([work], {'status': new_status}))
+            else:
+                raise UserError(gettext('project_phase.msg_previous_phase_error',
+                                        work=work.rec_name,
+                                        status=work.status.name))
+        cls.write(*to_write)
+
+    @classmethod
+    @ModelView.button
+    def next_phase(cls, works):
+        to_write = []
+        for work in works:
+            new_status = work._get_new_status(direction='next')
+            if new_status:
+                to_write.extend(([work], {'status': new_status}))
+            else:
+                raise UserError(gettext('project_phase.msg_next_phase_error',
+                                        work=work.rec_name,
+                                        status=work.status.name))
+        cls.write(*to_write)
 
     @classmethod
     def set_closing_date(cls, works):
