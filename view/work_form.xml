@@ -6,4 +6,8 @@ this repository contains the full copyright notices and license terms. -->
         <label name="closing_date"/>
         <field name="closing_date"/>
     </xpath>
+    <xpath expr="/form/notebook/page[@id='general']/group[@id='status_buttons']/group[@id='buttons']" position="inside">
+        <button name="previous_phase"/>
+        <button name="next_phase"/>
+    </xpath>
 </data>

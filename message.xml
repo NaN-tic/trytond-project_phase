@@ -6,5 +6,11 @@ this repository contains the full copyright notices and license terms. -->
       <record model="ir.message" id="required_effort">
           <field name="text">Task "%(work)s" can not saved without set effort</field>
       </record>
+      <record model="ir.message" id="msg_previous_phase_error">
+          <field name="text">The "%(status)s" status is the previous status of the "%(work)s".</field>
+      </record>
+      <record model="ir.message" id="msg_next_phase_error">
+          <field name="text">The "%(status)s" status is the latest status of the "%(work)s".</field>
+      </record>
     </data>
 </tryton>
