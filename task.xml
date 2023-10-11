@@ -13,6 +13,16 @@ this repository contains the full copyright notices and license terms. -->
             <field name="inherit" ref="project.work_view_form"/>
             <field name="name">work_form</field>
         </record>
+        <record model="ir.model.button" id="next_status_work_button">
+            <field name="name">next_status</field>
+            <field name="string">Next</field>
+            <field name="model" search="[('model', '=', 'project.work')]"/>
+        </record>
+        <record model="ir.model.button" id="previous_status_work_button">
+            <field name="name">previous_status</field>
+            <field name="string">Previous</field>
+            <field name="model" search="[('model', '=', 'project.work')]"/>
+        </record>
 
         <record model="ir.ui.view" id="project_tracker_view_form">
             <field name="model">project.work.tracker</field>

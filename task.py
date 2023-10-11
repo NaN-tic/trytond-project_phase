@@ -68,6 +68,44 @@ class Work(metaclass=PoolMeta):
         cls.status.domain += [If(Eval('type') == 'task',
                 ('workflows.trackers', 'in', [Eval('tracker')]),
                 ())]
+        cls._buttons.update({
+                'next_status': {
+                    'icon': 'tryton-forward',
+                    },
+                'previous_status': {
+                    'icon': 'tryton-back',
+                    },
+                })
+
+    @classmethod
+    @ModelView.button
+    def next_status(cls, works):
+        for work in works:
+            found = False
+            for line in work.tracker.workflow.lines:
+                if found:
+                    break
+                if line.status == work.status:
+                    found = True
+            else:
+                continue
+            work.status = line.status
+        cls.save(works)
+
+    @classmethod
+    @ModelView.button
+    def previous_status(cls, works):
+        for work in works:
+            previous = None
+            for line in work.tracker.workflow.lines:
+                if line.status == work.status:
+                    break
+                previous = line.status
+            else:
+                continue
+            if previous:
+                work.status = previous
+        cls.save(works)
 
     def get_active(self, name):
         if self.type == 'project':
