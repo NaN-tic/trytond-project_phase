@@ -5,5 +5,7 @@ this repository contains the full copyright notices and license terms. -->
     <xpath expr="//field[@name='status']" position="after">
         <label name="closing_date"/>
         <field name="closing_date"/>
+        <button name="previous_status"/>
+        <button name="next_status"/>
     </xpath>
 </data>
