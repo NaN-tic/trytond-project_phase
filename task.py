@@ -90,6 +90,7 @@ class Work(metaclass=PoolMeta):
             else:
                 continue
             work.status = line.status
+            work.on_change_status()
         cls.save(works)
 
     @classmethod
@@ -105,6 +106,7 @@ class Work(metaclass=PoolMeta):
                 continue
             if previous:
                 work.status = previous
+                work.on_change_status()
         cls.save(works)
 
     def get_active(self, name):
