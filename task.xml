@@ -16,12 +16,12 @@ this repository contains the full copyright notices and license terms. -->
         <record model="ir.model.button" id="next_status_work_button">
             <field name="name">next_status</field>
             <field name="string">Next</field>
-            <field name="model" search="[('model', '=', 'project.work')]"/>
+            <field name="model">project.work</field>
         </record>
         <record model="ir.model.button" id="previous_status_work_button">
             <field name="name">previous_status</field>
             <field name="string">Previous</field>
-            <field name="model" search="[('model', '=', 'project.work')]"/>
+            <field name="model">project.work</field>
         </record>
 
         <record model="ir.ui.view" id="project_tracker_view_form">
@@ -61,14 +61,14 @@ this repository contains the full copyright notices and license terms. -->
             <field name="act_window" ref="act_workflow"/>
         </record>
         <record model="ir.model.access" id="access_workflow">
-            <field name="model" search="[('model', '=', 'project.work.workflow')]"/>
+            <field name="model">project.work.workflow</field>
             <field name="perm_read" eval="True"/>
             <field name="perm_write" eval="False"/>
             <field name="perm_create" eval="False"/>
             <field name="perm_delete" eval="False"/>
         </record>
         <record model="ir.model.access" id="access_workflow_admin">
-            <field name="model" search="[('model', '=', 'project.work.workflow')]"/>
+            <field name="model">project.work.workflow</field>
             <field name="group" ref="project.group_project_admin"/>
             <field name="perm_read" eval="True"/>
             <field name="perm_write" eval="True"/>
@@ -88,14 +88,14 @@ this repository contains the full copyright notices and license terms. -->
             <field name="name">workflow_line_list</field>
         </record>
         <record model="ir.model.access" id="access_workflow_line">
-            <field name="model" search="[('model', '=', 'project.work.workflow.line')]"/>
+            <field name="model">project.work.workflow.line</field>
             <field name="perm_read" eval="True"/>
             <field name="perm_write" eval="False"/>
             <field name="perm_create" eval="False"/>
             <field name="perm_delete" eval="False"/>
         </record>
         <record model="ir.model.access" id="access_workflow_line_admin">
-            <field name="model" search="[('model', '=', 'project.work.workflow.line')]"/>
+            <field name="model">project.work.workflow.line</field>
             <field name="group" ref="project.group_project_admin"/>
             <field name="perm_read" eval="True"/>
             <field name="perm_write" eval="True"/>
