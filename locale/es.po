@@ -77,10 +77,6 @@ msgctxt "field:project.work.workflow.line,workflow:"
 msgid "Workflow"
 msgstr "Flujo de trabajo"
 
-msgctxt "model:ir.action,name:"
-msgid "Project Phase"
-msgstr "Fase del proyecto"
-
 msgctxt "model:ir.action,name:act_workflow"
 msgid "Project Workflow"
 msgstr "Flujo de trabajo del proyecto"
