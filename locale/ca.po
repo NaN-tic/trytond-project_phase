@@ -93,10 +93,6 @@ msgctxt "model:ir.model.button,string:previous_status_work_button"
 msgid "Previous"
 msgstr "Anterior"
 
-msgctxt "model:ir.ui.menu,name:"
-msgid "Task Phase"
-msgstr "Fase de la tasca"
-
 msgctxt "model:ir.ui.menu,name:menu_workflow"
 msgid "Workflows"
 msgstr "Fluxos de treball"
