@@ -62,7 +62,8 @@ class Work(metaclass=PoolMeta):
     def __setup__(cls):
         super().__setup__()
         readonly = cls.status.states.get('readonly', True)
-        cls.status.states['readonly'] = readonly & ~Bool(Eval('tracker'))
+        cls.status.states['readonly'] = (
+            readonly & ~Bool(Eval('tracker')) & (Eval('id', -1) >= 0))
         cls.status.depends.add('tracker')
         cls.status.depends.add('type')
         cls.status.domain += [If(Eval('type') == 'task',
