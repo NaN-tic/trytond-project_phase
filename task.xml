@@ -113,6 +113,6 @@ this repository contains the full copyright notices and license terms. -->
         <!-- Menus -->
         <menuitem action="act_workflow" id="menu_workflow"
             parent="project.menu_configuration"
-            sequence="10" name="Workflows"/>
+            sequence="20" name="Workflows"/>
     </data>
 </tryton>
